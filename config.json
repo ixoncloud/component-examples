@@ -3,6 +3,14 @@
   "newComponentRoot": "examples",
   "prefix": "pct",
   "components": {
+    "google-maps": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/vue-builder:browser",
+          "input": "google-maps.vue"
+        }
+      }
+    },
     "sticky-note": {
       "runner": {
         "build": {
