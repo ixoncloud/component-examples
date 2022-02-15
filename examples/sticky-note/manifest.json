@@ -1,0 +1,31 @@
+{
+  "main": "pct-sticky-note.min.js",
+  "version": "1",
+  "sheetSettings": {
+    "defaultCols": 3,
+    "defaultRows": 4,
+    "minCols": 1,
+    "minRows": 2
+  },
+  "inputs": [
+    {
+      "key": "text",
+      "type": "Text",
+      "label": "Note",
+      "placeholder": "Enter text"
+    },
+    {
+      "key": "color",
+      "type": "Selection",
+      "label": "Color",
+      "options": [
+        { "value": "#feff9c", "label": "Yellow (default)" },
+        { "value": "#ff7eb9", "label": "Pink" },
+        { "value": "#7afcff", "label": "Blue" },
+        { "value": "#f49f3f", "label": "Orange" },
+        { "value": "#a6efa6", "label": "Green" }
+      ],
+      "defaultValue": "#feff9c"
+    }
+  ]
+}

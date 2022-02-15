@@ -1,0 +1,18 @@
+{
+  "name": "component-examples",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node scripts/serve"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@ixon-cdk/core": "^1.0.0-rc.0",
+    "@ixon-cdk/runner": "^1.0.0-rc.0",
+    "@ixon-cdk/simulator": "^1.0.0-rc.0",
+    "@ixon-cdk/static-builder": "^1.0.0-rc.0",
+    "@ixon-cdk/vue-builder": "^1.0.0-rc.0"
+  }
+}

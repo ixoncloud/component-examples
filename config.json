@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/@ixon-cdk/core/config/schema.json",
+  "newComponentRoot": "examples",
+  "prefix": "pct",
+  "components": {
+    "sticky-note": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/vue-builder:browser",
+          "input": "sticky-note.vue"
+        }
+      }
+    },
+    "youtube-player": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/static-builder:browser",
+          "input": "youtube-player.js"
+        }
+      }
+    }
+  }
+}
