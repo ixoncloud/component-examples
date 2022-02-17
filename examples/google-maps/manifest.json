@@ -1,0 +1,11 @@
+{
+  "main": "pct-google-maps.min.js",
+  "version": "1",
+  "sheetSettings": {
+    "defaultCols": 6,
+    "defaultRows": 6,
+    "minCols": 4,
+    "minRows": 4
+  },
+  "inputs": []
+}
