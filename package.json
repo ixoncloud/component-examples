@@ -9,11 +9,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@ixon-cdk/core": "^1.0.0-rc.0",
-    "@ixon-cdk/runner": "^1.0.0-rc.0",
-    "@ixon-cdk/simulator": "^1.0.0-rc.0",
-    "@ixon-cdk/static-builder": "^1.0.0-rc.0",
-    "@ixon-cdk/vue-builder": "^1.0.0-rc.0"
+    "@ixon-cdk/core": "^1.0.0",
+    "@ixon-cdk/runner": "^1.0.0",
+    "@ixon-cdk/simulator": "^1.0.0",
+    "@ixon-cdk/static-builder": "^1.0.0",
+    "@ixon-cdk/vue-builder": "^1.0.0"
   },
   "dependencies": {
     "vue3-google-map": "^0.8.3"
