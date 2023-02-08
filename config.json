@@ -26,6 +26,14 @@
           "input": "youtube-player.js"
         }
       }
+    },
+    "calculate-single-value": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/svelte-builder:browser",
+          "input": "calculate-single-value.svelte"
+        }
+      }
     }
   }
 }
