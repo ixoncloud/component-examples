@@ -3,6 +3,22 @@
   "newComponentRoot": "examples",
   "prefix": "pct",
   "components": {
+    "calculate-single-value": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/svelte-builder:browser",
+          "input": "calculate-single-value.svelte"
+        }
+      }
+    },
+    "embedded-web-access": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/static-builder:browser",
+          "input": "embedded-web-access.js"
+        }
+      }
+    },
     "google-maps": {
       "runner": {
         "build": {
@@ -24,14 +40,6 @@
         "build": {
           "builder": "@ixon-cdk/static-builder:browser",
           "input": "youtube-player.js"
-        }
-      }
-    },
-    "calculate-single-value": {
-      "runner": {
-        "build": {
-          "builder": "@ixon-cdk/svelte-builder:browser",
-          "input": "calculate-single-value.svelte"
         }
       }
     }

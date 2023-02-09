@@ -1,0 +1,17 @@
+{
+  "main": "pct-embedded-web-access.min.js",
+  "version": "1",
+  "sheetSettings": {
+    "defaultCols": 6,
+    "defaultRows": 6,
+    "minCols": 1,
+    "minRows": 1
+  },
+  "inputs": [
+    {
+      "key": "httpServerName",
+      "type": "String",
+      "label": "HTTP Server Name"
+    }
+  ]
+}
