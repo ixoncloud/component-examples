@@ -17,3 +17,9 @@ npm start
 ```
 
 You will be prompted to select a specific example, which will then be built and opened in the simulator in a browser.
+
+You can use real machine data from IXON Cloud in the simulator by running:
+
+```sh
+npm run login
+```
