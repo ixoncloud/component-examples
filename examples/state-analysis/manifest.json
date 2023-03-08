@@ -1,0 +1,157 @@
+{
+  "main": "pct-state-analysis.min.js",
+  "version": "1",
+  "sheetSettings": {
+    "defaultCols": 6,
+    "defaultRows": 6,
+    "minCols": 3,
+    "minRows": 3
+  },
+  "reportSettings": {
+    "defaultCols": 6,
+    "defaultRows": 6,
+    "minCols": 3,
+    "minRows": 3
+  },
+  "inputs": [
+    {
+      "key": "header",
+      "type": "Group",
+      "label": "Info",
+      "children": [
+        {
+          "key": "title",
+          "type": "String",
+          "label": "Title",
+          "placeholder": "Leave empty for no title"
+        },
+        {
+          "key": "subtitle",
+          "type": "String",
+          "label": "Subtitle",
+          "placeholder": "Leave empty for no subtitle"
+        }
+      ]
+    },
+    {
+      "key": "dataSource",
+      "type": "Group",
+      "label": "Input",
+      "summary": {
+        "label": "Data Source"
+      },
+      "children": [
+        {
+          "key": "metric",
+          "type": "RawMetric",
+          "label": "Metric",
+          "placeholder": "Enter the metric to display",
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "analysis",
+      "type": "Group",
+      "label": "Analysis",
+      "children": [
+        {
+          "key": "type",
+          "label": "Type",
+          "type": "Selection",
+          "options": [
+            { "value": "duration", "label": "Duration" },
+            { "value": "occurrences", "label": "Occurrences" }
+          ],
+          "required": true,
+          "defaultValue": "occurrences"
+        }
+      ]
+    },
+    {
+      "key": "style",
+      "type": "Group",
+      "label": "Style",
+      "children": [
+        {
+          "key": "visualisation",
+          "label": "Visualisation",
+          "type": "Selection",
+          "options": [
+            { "value": "bars", "label": "Bars" },
+            { "value": "pie", "label": "Pie" }
+          ],
+          "required": true,
+          "defaultValue": "bars"
+        }
+      ]
+    },
+    {
+      "key": "rules",
+      "label": "Rules",
+      "type": "List",
+      "itemType": {
+        "key": "rule",
+        "label": "Rule",
+        "type": "Group",
+        "summary": {
+          "label": "{{name}}: {{operator}} {{value}}",
+          "colorField": "color"
+        },
+        "children": [
+          {
+            "key": "color",
+            "label": "Color",
+            "required": true,
+            "defaultValue": "#000000",
+            "type": "Color"
+          },
+          {
+            "key": "name",
+            "label": "Name",
+            "required": true,
+            "type": "String"
+          },
+          {
+            "key": "operator",
+            "label": "Operator",
+            "required": true,
+            "type": "Selection",
+            "options": [
+              {
+                "value": "eq",
+                "label": "Equal to (=)"
+              },
+              {
+                "value": "ne",
+                "label": "Not equal to (≠)"
+              },
+              {
+                "value": "lt",
+                "label": "Less than (<)"
+              },
+              {
+                "value": "le",
+                "label": "Less than or equal (≤)"
+              },
+              {
+                "value": "gt",
+                "label": "Greater than (>)"
+              },
+              {
+                "value": "ge",
+                "label": "Greater than or equal (≥)"
+              }
+            ]
+          },
+          {
+            "key": "value",
+            "label": "Value",
+            "required": true,
+            "type": "String"
+          }
+        ]
+      }
+    }
+  ]
+}

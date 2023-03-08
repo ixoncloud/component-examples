@@ -27,6 +27,14 @@
         }
       }
     },
+    "state-analysis": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/svelte-builder:browser",
+          "input": "state-analysis.svelte"
+        }
+      }
+    },
     "sticky-note": {
       "runner": {
         "build": {

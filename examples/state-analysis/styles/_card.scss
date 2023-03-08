@@ -1,0 +1,91 @@
+$card-header-height: 40px;
+
+.card {
+  height: 100%;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+
+  .card-header {
+    font-family: var(--font-family);
+    height: $card-header-height;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    z-index: 1;
+
+    & > .card-title:last-child,
+    & > .card-subtitle:first-child {
+      padding: 8px;
+    }
+
+    .card-title {
+      padding: 8px 8px 0 8px;
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    & > .card-title + .card-subtitle {
+      padding: 0 8px 8px 8px;
+    }
+
+    .card-subtitle {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 400;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &.with-actions {
+      display: flex;
+      flex-direction: row;
+
+      .card-title {
+        flex: 1;
+      }
+
+      .actions-top {
+        padding: 8px;
+      }
+    }
+  }
+
+  .card-content {
+    flex: 1;
+    padding: 8px;
+    box-sizing: border-box;
+
+    & + .card-actions {
+      margin-top: -56px;
+    }
+  }
+
+  .card-actions {
+    height: 40px;
+    padding: 8px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .card-header,
+  .card-actions {
+    .flex {
+      flex: 1;
+    }
+  }
+
+  .nav-tab-list-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .shallow {
+    margin-top: -4px;
+  }
+}
