@@ -17,13 +17,18 @@ export class DataService {
     if (!this.context.inputs.dataSource?.metric) {
       return null;
     }
+    const tagSourceSlug = this.context.inputs.dataSource.metric.selector
+      .split('Agent#selected:')[1]
+      .split('.tag.')[0];
+    const dataSource = await this._getAgentDataSource(tagSourceSlug);
+    if (!dataSource) {
+      return null;
+    }
 
     const tagSlug =
       this.context.inputs.dataSource.metric.selector.split('.tag.')[1];
-    const tags = await this._getTags([tagSlug]);
-    const sourceId = tags.find((x) => x.slug === tagSlug).source.publicId;
     const allMetricsOfTagSlug = await this._getAllRawMetrics(
-      sourceId,
+      dataSource.publicId,
       [tagSlug],
       true,
       0,
@@ -56,7 +61,6 @@ export class DataService {
     const body = {
       start,
       end,
-      timeZone: 'UTC',
       source: { publicId: sourceId },
       tags: tagSlugs.map((slug) => ({
         slug: slug,
@@ -92,7 +96,6 @@ export class DataService {
     const body = {
       start,
       end,
-      timeZone: 'UTC',
       source: { publicId: sourceId },
       tags: tagSlugs.map((slug) => ({
         slug: slug,
@@ -121,7 +124,7 @@ export class DataService {
     return new Date(milliSeconds).toISOString().split('.')[0] + 'Z';
   }
 
-  async _getTags(slugs) {
+  async _getAgentDataSource(slug) {
     return new Promise((resolve, reject) => {
       const client = this.context.createResourceDataClient();
       client.query(
@@ -131,20 +134,16 @@ export class DataService {
             reject();
           }
           const agent = result.data;
-          const filters = this._getFilters([
-            { property: 'slug', values: slugs },
-          ]);
           const url =
-            this.context.getApiUrl('AgentDataTagList', {
+            this.context.getApiUrl('AgentDataSourceList', {
               agentId: agent.publicId,
             }) +
-            '?fields=*,source.publicId,agent.publicId' +
-            filters;
+            `?fields=*,source.publicId,agent.publicId&filters=eq(slug,"${slug}")`;
           const response = await fetch(url, {
             headers: this.headers,
             method: 'GET',
           }).then((res) => res.json());
-          resolve(response.data);
+          resolve(response.data[0] || null);
         }
       );
     });
