@@ -5,26 +5,26 @@
   "main": "index.js",
   "scripts": {
     "start": "node scripts/serve",
-    "login": "node node_modules/@ixon-cdk/runner login"
+    "login": "cdk login"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/preset-env": "^7.20.2",
-    "@ixon-cdk/core": "^1.1.0",
-    "@ixon-cdk/runner": "^1.1.0",
-    "@ixon-cdk/simulator": "^1.1.0",
-    "@ixon-cdk/static-builder": "^1.1.0",
-    "@ixon-cdk/svelte-builder": "^1.1.0",
-    "@ixon-cdk/vue-builder": "^1.1.0"
+    "@babel/preset-env": "^7.22.9",
+    "@ixon-cdk/core": "^1.2.0",
+    "@ixon-cdk/runner": "^1.2.0",
+    "@ixon-cdk/simulator": "^1.2.0",
+    "@ixon-cdk/static-builder": "^1.2.0",
+    "@ixon-cdk/svelte-builder": "^1.2.0",
+    "@ixon-cdk/vue-builder": "^1.2.0"
   },
   "dependencies": {
     "d3-scale-chromatic": "^3.0.0",
-    "echarts": "^5.4.1",
+    "echarts": "^5.4.3",
     "expr-eval": "^2.0.2",
     "lodash-es": "^4.17.21",
-    "luxon": "^3.1.1",
+    "luxon": "^3.3.0",
     "tinycolor2": "^1.4.2",
-    "vue3-google-map": "^0.13.2"
+    "vue3-google-map": "^0.15.0"
   }
 }
