@@ -17,6 +17,11 @@
       "key": "autoplay",
       "type": "Checkbox",
       "label": "Autoplay"
+    },
+    {
+      "key": "loop",
+      "type": "Checkbox",
+      "label": "Loop"
     }
   ]
 }

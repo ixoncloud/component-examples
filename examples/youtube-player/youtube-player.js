@@ -1,5 +1,5 @@
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     #player {
       height: 100%;
@@ -27,6 +27,10 @@ class PctYoutubePlayer extends HTMLElement {
     iframe.setAttribute('allow', 'autoplay; fullscreen');
     const params = new URLSearchParams({
       autoplay: this.context.inputs.autoplay ? 1 : 0,
+      // See note on https://developers.google.com/youtube/player_parameters#loop
+      ...(this.context.inputs.loop
+        ? { loop: 1, playlist: this._getVideoId() }
+        : {}),
       modestbranding: 1,
       playsinline: 1,
     });
