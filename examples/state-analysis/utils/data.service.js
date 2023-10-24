@@ -17,18 +17,28 @@ export class DataService {
     if (!this.context.inputs.dataSource?.metric) {
       return null;
     }
-    const tagSourceSlug = this.context.inputs.dataSource.metric.selector
-      .split('Agent#selected:')[1]
-      .split('.tag.')[0];
-    const dataSource = await this._getAgentDataSource(tagSourceSlug);
-    if (!dataSource) {
+    const tagSlug =
+      this.context.inputs.dataSource.metric.selector.split('.tag.')[1];
+    const sourceSlug = this.context.inputs.dataSource.metric.selector
+      .split('.tag.')[0]
+      .split('Agent#selected:')[1];
+
+    const agent = await this._getAgent();
+
+    const sources = await this._getDataSources(agent, sourceSlug);
+    const tags = await this._getTags(agent, [tagSlug]);
+    const filteredTags = tags.filter((tag) => {
+      return sources.find((source) => source.publicId === tag.source.publicId);
+    });
+
+    const sourceId = filteredTags.find((x) => x.slug === tagSlug)?.source
+      .publicId;
+    if (!sourceId) {
       return null;
     }
 
-    const tagSlug =
-      this.context.inputs.dataSource.metric.selector.split('.tag.')[1];
     const allMetricsOfTagSlug = await this._getAllRawMetrics(
-      dataSource.publicId,
+      sourceId,
       [tagSlug],
       true,
       0,
@@ -129,29 +139,53 @@ export class DataService {
     return new Date(milliSeconds).toISOString().split('.')[0] + 'Z';
   }
 
-  async _getAgentDataSource(slug) {
+  async _getAgent() {
+    let cancel;
     return new Promise((resolve, reject) => {
       const client = this.context.createResourceDataClient();
-      client.query(
+      cancel = client.query(
         { selector: 'Agent', fields: ['publicId'] },
-        async ([result]) => {
-          if (!result.data) {
-            reject();
+        ([result]) => {
+          if (cancel) {
+            cancel();
           }
-          const agent = result.data;
-          const url =
-            this.context.getApiUrl('AgentDataSourceList', {
-              agentId: agent.publicId,
-            }) +
-            `?fields=*,source.publicId,agent.publicId&filters=eq(slug,"${slug}")`;
-          const response = await fetch(url, {
-            headers: this.headers,
-            method: 'GET',
-          }).then((res) => res.json());
-          resolve(response.data[0] || null);
+          if (result.data) {
+            resolve(result.data);
+          } else {
+            reject(new Error('Agent not found'));
+          }
         }
       );
     });
+  }
+
+  async _getDataSources(agent, slug) {
+    const url =
+      this.context.getApiUrl('AgentDataSourceList', {
+        agentId: agent.publicId,
+      }) +
+      '?fields=*,publicId,agent.publicId' +
+      `&filters=eq(slug,"${slug}")`;
+    const response = await fetch(url, {
+      headers: this.headers,
+      method: 'GET',
+    }).then((res) => res.json());
+    return response.data;
+  }
+
+  async _getTags(agent, slugs) {
+    const filters = this._getFilters([{ property: 'slug', values: slugs }]);
+    const url =
+      this.context.getApiUrl('AgentDataTagList', {
+        agentId: agent.publicId,
+      }) +
+      '?fields=*,source.publicId,agent.publicId' +
+      filters;
+    const response = await fetch(url, {
+      headers: this.headers,
+      method: 'GET',
+    }).then((res) => res.json());
+    return response.data;
   }
 
   _getFilters(kwargs) {
