@@ -1,10 +1,10 @@
 import { isNumber } from 'lodash-es';
 
-export function metricHasQueryRequirements(metric) {
+export function metricHasQueryRequirements(metric: any) {
   return metric && metric.aggregator && metric.selector;
 }
 
-export function mapMetricInputToQuery(metric) {
+export function mapMetricInputToQuery(metric: any) {
   return {
     selector: metric.selector,
     ...(metric.aggregator ? { postAggr: metric.aggregator } : {}),

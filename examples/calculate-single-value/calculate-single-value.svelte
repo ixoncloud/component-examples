@@ -1,35 +1,52 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
-  import tinycolor from 'tinycolor2';
+
+  import tinycolor, { type Instance, type MostReadableArgs } from 'tinycolor2';
   import { Parser } from 'expr-eval';
-  import {
-    mapMetricInputToQuery,
-    mapValueToRule,
-    durationToformattedTimeStamp,
-  } from './utils';
 
-  export let context;
+  import type {
+    ComponentContext,
+    LoggingDataMetric,
+    ComponentContextAggregatedMetricInput,
+  } from '@ixon-cdk/types';
 
-  let rootEl;
+  import { mapMetricInputToQuery } from './utils/query';
+  import { mapValueToRule, durationToformattedTimeStamp } from './utils';
+
+  type Variable = {
+    name: string;
+    metric: ComponentContextAggregatedMetricInput;
+  };
+
+  export let context: ComponentContext;
+
+  let rootEl: HTMLDivElement;
 
   // Data
-  let height = null;
-  let calculatedValue = null;
+  let height: number | null = null;
+  let calculatedValue: number | null = null;
   let text = '';
   let error = '';
-  let cardColor = null;
-  let textColor = null;
+  let cardColor: string | null = null;
+  let textColor: Instance | null = null;
 
   // Debugging for studio users
   let debugMode = false;
-  let variableKeyValues = {};
-  let formula = '';
+  let variableKeyValues: any;
+  let formula: string = '';
 
   // Watchers
   $: _metric(calculatedValue);
-  function _metric(calculatedValue) {
+  function _metric(calculatedValue: number | null) {
     if (calculatedValue !== null) {
-      const inputRules = context.inputs.rules;
+      const inputRules: {
+        rule: {
+          operator: string;
+          value: string;
+          color: string;
+          colorUsage: string;
+        };
+      }[] = context.inputs.rules;
       const ruleItem = mapValueToRule(calculatedValue, inputRules);
       const rule = ruleItem ? ruleItem.rule : undefined;
 
@@ -39,14 +56,14 @@
           cardColor = null;
         } else {
           const color = tinycolor(rule.color);
-          const wcag2 = { level: 'AA', size: 'small' };
+          const wcag2: MostReadableArgs = { level: 'AA', size: 'small' };
           const readable = tinycolor.isReadable(color, 'black', wcag2);
           textColor = readable
             ? null
             : tinycolor.mostReadable(
                 color,
                 ['white', '#f0f0f0', '#e0e0e0'],
-                wcag2
+                wcag2,
               );
           cardColor = rule.color;
         }
@@ -63,7 +80,7 @@
   $: header = context ? context.inputs.header : undefined;
   $: scaledTextStyle = `fill: ${textColor || 'inherit'}`;
   $: cardStyle = _cardStyle(cardColor);
-  function _cardStyle(_cardColor) {
+  function _cardStyle(_cardColor: string | null) {
     if (_cardColor) {
       return `background-color: ${_cardColor}`;
     }
@@ -71,7 +88,7 @@
   }
 
   $: cardContentTextStyle = _cardContentTextStyle(textColor);
-  function _cardContentTextStyle(_textColor) {
+  function _cardContentTextStyle(_textColor: Instance | null) {
     if (_textColor) {
       return `color: ${_textColor}`;
     }
@@ -79,7 +96,7 @@
   }
 
   $: hasStaticSize = _hasStaticSize(context);
-  function _hasStaticSize(context) {
+  function _hasStaticSize(context: ComponentContext) {
     if (context && context.inputs && context.inputs.style) {
       return context.inputs.style.fontSize !== 'auto';
     }
@@ -87,7 +104,7 @@
   }
 
   $: staticSizeStyle = _staticSizeStyle(hasStaticSize);
-  function _staticSizeStyle(hasStaticSize) {
+  function _staticSizeStyle(hasStaticSize: boolean) {
     if (hasStaticSize) {
       return `font-size: ${context.inputs.style.fontSize}px;`;
     }
@@ -95,7 +112,7 @@
   }
 
   $: svgViewBox = _svgViewBox(text);
-  function _svgViewBox(text) {
+  function _svgViewBox(text: string) {
     const textLength = text.length - (text.startsWith('-') ? 1 : 0);
     const fontSize = 14.0;
     const textWidth = textLength * fontSize * 0.6;
@@ -103,8 +120,13 @@
     return `${-textWidth / 2} ${-textHeight / 2} ${textWidth} ${textHeight}`;
   }
 
-  function toString(value, decimals, unit, locale) {
-    const options = {
+  function toString(
+    value: number,
+    decimals: number,
+    unit: string,
+    locale: string,
+  ) {
+    const options: Intl.NumberFormatOptions = {
       style: 'decimal',
       minimumFractionDigits: Math.floor(decimals),
       maximumFractionDigits: Math.floor(decimals),
@@ -123,15 +145,18 @@
     };
 
     const client = context.createLoggingDataClient();
-    const { variables } = context.inputs || [];
-    const queries = variables.map((x) => {
+    // const { variables: ComponentContextInputs } = context.inputs || [];
+    const variables = context.inputs.variables;
+    const queries = variables.map((x: { variable: Variable }) => {
       return {
         ...mapMetricInputToQuery(x?.variable?.metric),
         limit: 1,
       };
     });
-    const variableNames = variables.map((x) => x?.variable?.name);
-    const hasDuplicates = (variableNames) =>
+    const variableNames = variables.map(
+      (x: { variable: Variable }) => x?.variable?.name,
+    );
+    const hasDuplicates = (variableNames: string[]) =>
       variableNames.length !== new Set(variableNames).size;
 
     if (hasDuplicates(variableNames)) {
@@ -139,29 +164,32 @@
       return;
     }
 
-    function processResponse(metrics) {
-      const variableValues = metrics.map((x) => {
+    function processResponse(metrics: LoggingDataMetric[][]) {
+      const variableValues = metrics.map(x => {
         const value = x[0]?.value?.getValue();
         return value !== undefined ? Number(value) : 'no-data-in-period';
       });
 
       const noDataInPeriod =
-        variableValues.find((x) => x === 'no-data-in-period') !== undefined;
+        variableValues.find(x => x === 'no-data-in-period') !== undefined;
       if (noDataInPeriod) {
         error = 'No data available in selected time period';
         return;
       }
 
       const notANumber =
-        variableValues.find((x) => Number.isNaN(x)) !== undefined;
+        variableValues.find(x => Number.isNaN(x)) !== undefined;
       if (notANumber) {
         error = 'Only works with number variables';
         return;
       }
 
-      variableKeyValues = variableNames.reduce((accumulator, value, index) => {
-        return { ...accumulator, [value]: variableValues[index] };
-      }, {});
+      variableKeyValues = variableNames.reduce(
+        (accumulator: any, value: string, index: number) => {
+          return { ...accumulator, [value]: variableValues[index] };
+        },
+        {},
+      );
 
       formula = context.inputs.calculation.formula;
       const decimals = context.inputs.calculation.decimals || 0;
@@ -182,8 +210,8 @@
     }
     const cancelQuery = client.query(queries, processResponse);
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      entries.forEach((entry) => {
+    const resizeObserver = new ResizeObserver(entries => {
+      entries.forEach(entry => {
         height = entry.contentRect.height;
       });
     });
@@ -200,7 +228,7 @@
   });
 </script>
 
-<div class="card" bind:this="{rootEl}" style="{cardStyle}">
+<div class="card" bind:this={rootEl} style={cardStyle}>
   {#if hasHeader}
     <div class="card-header">
       {#if header.title}
@@ -216,32 +244,32 @@
     {#each Object.entries(variableKeyValues) as [k, v]}
       <span>{k} : {v}</span>
     {/each}
-    <p></p>
+    <p />
   {/if}
   {#if text !== null}
     <div
       class="card-content"
-      class:has-header="{hasHeader}"
-      style="{cardContentTextStyle}"
+      class:has-header={hasHeader}
+      style={cardContentTextStyle}
     >
       {#if error}
-        <div class="static" style="{staticSizeStyle}">
+        <div class="static" style={staticSizeStyle}>
           <p>{error}</p>
         </div>
       {/if}
       {#if hasStaticSize}
-        <div class="static" style="{staticSizeStyle}">
+        <div class="static" style={staticSizeStyle}>
           <span>{text}</span>
         </div>
       {:else}
         <div class="scaled">
-          <svg viewBox="{svgViewBox}">
+          <svg viewBox={svgViewBox}>
             <text
               x="0"
               y="0"
               text-anchor="middle"
               dominant-baseline="middle"
-              style="{scaledTextStyle}">{text}</text
+              style={scaledTextStyle}>{text}</text
             >
           </svg>
         </div>
