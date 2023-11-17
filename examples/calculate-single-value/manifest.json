@@ -1,8 +1,5 @@
 {
-  "id": "pct-calculate-single-value",
   "main": "pct-calculate-single-value.min.js",
-  "name": "Calculate Single Value",
-  "description": "Displays a single calculated metric value",
   "version": "1",
   "sheetSettings": {
     "minCols": 1,
@@ -58,7 +55,10 @@
             "key": "metric",
             "label": "Metric",
             "type": "AggregatedMetric",
-            "allowedTypes": ["int", "float"],
+            "allowedTypes": [
+              "int",
+              "float"
+            ],
             "required": true
           }
         ]
@@ -78,7 +78,8 @@
           "label": "Formula",
           "placeholder": "x / y * 100",
           "required": true,
-          "description": "You can use various math operators like: *, /, +, -, ^, tan, sin, cos, log, etc. The full list of possible operators can be found here: https://www.npmjs.com/package/expr-eval#expression-syntax"
+          "description": "You can use various math operators like: *, /, +, -, ^, tan, sin, cos, log, etc. The full list of possible operators can be found here: https://www.npmjs.com/package/expr-eval#expression-syntax",
+          "translate": false
         },
         {
           "key": "decimals",

@@ -1,4 +1,12 @@
-function ruleToPredicate(rule, value) {
+function ruleToPredicate(
+  rule: {
+    operator: string;
+    value: string;
+    color: string;
+    colorUsage: string;
+  },
+  value: number | string
+) {
   const threshold = rule.value;
   const type = typeof value;
   if (type !== 'string') {
@@ -35,10 +43,30 @@ function ruleToPredicate(rule, value) {
   }
 }
 
-export function mapValueToRule(value, rules) {
+export function mapValueToRule(
+  value: number | string,
+  rules: {
+    rule: {
+      operator: string;
+      value: string;
+      color: string;
+      colorUsage: string;
+    };
+  }[]
+) {
   return rules?.find((item) => ruleToPredicate(item.rule, value));
 }
 
-export function mapValueToRuleIndex(value, rules) {
+export function mapValueToRuleIndex(
+  value: number | string,
+  rules: {
+    rule: {
+      operator: string;
+      value: string;
+      color: string;
+      colorUsage: string;
+    };
+  }[]
+) {
   return rules?.findIndex((item) => ruleToPredicate(item.rule, value));
 }

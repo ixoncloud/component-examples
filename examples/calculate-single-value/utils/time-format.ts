@@ -1,6 +1,6 @@
 import { Duration } from 'luxon';
 
-export function durationToformattedTimeStamp(durationSeconds) {
+export function durationToformattedTimeStamp(durationSeconds: number) {
   const durationMillis = durationSeconds * 1000;
   const timestamp = Duration.fromMillis(durationMillis).shiftTo(
     'days',
