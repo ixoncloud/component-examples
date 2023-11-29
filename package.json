@@ -8,7 +8,7 @@
     "login": "cdk login"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/preset-env": "^7.22.9",
     "@ixon-cdk/core": "^1.2.0",
