@@ -1,59 +1,27 @@
-<script>
+<script lang="ts">
   import { onMount, tick } from 'svelte';
 
-  import { ChartService } from './utils/chart.service';
-  import { DataService } from './utils/data.service';
+  import { ChartService } from './services/chart.service';
+  import { DataService } from './services/data.service';
+
   import {
     calculateOccurrences,
     calculateDurationsInMilliseconds,
   } from './utils/state';
-  import { runResizeObserver } from './utils';
 
-  export let context;
+  import type { ComponentContext, ResourceDataClient } from '@ixon-cdk/types';
 
-  let chartEl;
-  let rootEl;
-  let header;
+  import { runResizeObserver } from './utils/resize-observer';
+
+  export let context: ComponentContext;
+
+  let chartEl: HTMLDivElement;
+  let rootEl: HTMLDivElement;
+  let resourceClient: ResourceDataClient;
+  let header: { title: string; subtitle: string };
   let width = 0;
 
   $: isNarrow = width < 640;
-
-  async function getDataAndDrawVisuals(chartService) {
-    chartService.showLoading();
-    const data = await new DataService(context).getAllRawMetrics();
-    if (data === null) {
-      chartService.showError();
-      return;
-    }
-    const visualisation = context.inputs.style.visualisation;
-    const rules = context.inputs.rules;
-
-    if (context.inputs.analysis.type === 'occurrences') {
-      const occurrences = calculateOccurrences(data);
-      chartService.setData(
-        occurrences,
-        visualisation,
-        rules,
-        isNarrow,
-        'occurrences'
-      );
-    } else if (context.inputs.analysis.type === 'duration') {
-      const durations = calculateDurationsInMilliseconds(
-        data,
-        context.timeRange.to
-      );
-      chartService.setData(
-        durations,
-        visualisation,
-        rules,
-        isNarrow,
-        'duration'
-      );
-    }
-    setTimeout(() => {
-      chartService.resize(isNarrow);
-    }, 1000);
-  }
 
   onMount(async () => {
     width = rootEl.getBoundingClientRect().width;
@@ -65,6 +33,8 @@
     const chartService = new ChartService(chartEl);
 
     header = context ? context.inputs.header : undefined;
+
+    resourceClient = context.createResourceDataClient();
 
     const resizeObserver = runResizeObserver(rootEl, () => {
       tick().then(() => {
@@ -85,9 +55,54 @@
       resizeObserver?.disconnect();
     };
   });
+
+  async function getDataAndDrawVisuals(chartService: ChartService) {
+    chartService.showLoading();
+    const data = await new DataService(
+      context,
+      resourceClient,
+    ).getAllRawMetrics();
+    if (data === null) {
+      chartService.showError('Error check your inputs');
+      return;
+    }
+    if (data.length === 0) {
+      chartService.showError('No data found in selected period');
+      return;
+    }
+
+    const visualisation = context.inputs.style.visualisation;
+    const rules = context.inputs.rules;
+
+    if (context.inputs.analysis.type === 'occurrences') {
+      const occurrences = calculateOccurrences(data);
+      chartService.setData(
+        occurrences,
+        visualisation,
+        rules,
+        isNarrow,
+        'occurrences',
+      );
+    } else if (context.inputs.analysis.type === 'duration') {
+      const durations = calculateDurationsInMilliseconds(
+        data,
+        context.timeRange.to,
+      );
+      chartService.setData(
+        durations,
+        visualisation,
+        rules,
+        isNarrow,
+        'duration',
+      );
+    }
+    setTimeout(() => {
+      chartService.resize(isNarrow);
+    }, 1000);
+  }
 </script>
 
-<div class="card" bind:this="{rootEl}">
+<div class="card" bind:this={rootEl}>
   {#if header && (header.title || header.subtitle)}
     <div class="card-header">
       {#if header.title}
@@ -99,7 +114,7 @@
     </div>
   {/if}
   <div class="card-content">
-    <div class="chart" bind:this="{chartEl}"></div>
+    <div class="chart" bind:this={chartEl} />
   </div>
 </div>
 

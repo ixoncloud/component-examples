@@ -1,14 +1,17 @@
 import { countBy } from 'lodash-es';
 import { DateTime } from 'luxon';
 
-export function calculateOccurrences(data) {
-  const values = data.map((x) => x.value);
+export function calculateOccurrences(data: { time: number; value: any }[]) {
+  const values = data.map(x => x.value);
   const occurences = countBy(values);
   return occurences;
 }
 
-export function calculateDurationsInMilliseconds(data, timeRangeEnd) {
-  const results = {};
+export function calculateDurationsInMilliseconds(
+  data: { time: number; value: any }[],
+  timeRangeEnd: number,
+): { [key: string]: number } {
+  const results: { [key: string]: number } = {};
   data.map((current, index) => {
     const isFirst = index === 0;
     if (isFirst) {
