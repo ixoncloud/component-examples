@@ -77,13 +77,6 @@ export class ChartService {
       return b.value - a.value;
     });
 
-    if (sortedInputsArrayDescending.length > 25) {
-      this.showError(
-        'The selected tag has too many states.\nThe maximum number of states is 25.'
-      );
-      return;
-    }
-
     const largestValue = sortedInputsArrayDescending[0]?.value;
 
     const chartData: ChartData = sortedInputsArrayDescending.map((k) => {
