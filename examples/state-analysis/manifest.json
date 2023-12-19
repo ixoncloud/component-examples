@@ -60,8 +60,14 @@
           "label": "Type",
           "type": "Selection",
           "options": [
-            { "value": "duration", "label": "Duration" },
-            { "value": "occurrences", "label": "Occurrences" }
+            {
+              "value": "duration",
+              "label": "Duration"
+            },
+            {
+              "value": "occurrences",
+              "label": "Occurrences"
+            }
           ],
           "required": true,
           "defaultValue": "occurrences"
@@ -78,8 +84,14 @@
           "label": "Visualisation",
           "type": "Selection",
           "options": [
-            { "value": "bars", "label": "Bars" },
-            { "value": "pie", "label": "Pie" }
+            {
+              "value": "bars",
+              "label": "Bars"
+            },
+            {
+              "value": "pie",
+              "label": "Pie"
+            }
           ],
           "required": true,
           "defaultValue": "bars"
