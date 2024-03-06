@@ -50,6 +50,14 @@
           "input": "youtube-player.js"
         }
       }
+    },
+    "landing-page-demo": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/svelte-builder:browser",
+          "input": "landing-page-demo.svelte"
+        }
+      }
     }
   }
 }

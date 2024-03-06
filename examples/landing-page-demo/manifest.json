@@ -1,0 +1,11 @@
+{
+  "main": "pct-landing-page-demo.min.js",
+  "version": "1",
+  "sheetSettings": {
+    "defaultCols": 6,
+    "defaultRows": 6,
+    "minCols": 3,
+    "minRows": 3
+  },
+  "inputs": []
+}
