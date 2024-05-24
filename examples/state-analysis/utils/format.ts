@@ -1,7 +1,7 @@
 import { deburr, get, has, kebabCase } from 'lodash-es';
 import { Duration } from 'luxon';
 
-export function getDataExportFileName(title) {
+export function getDataExportFileName(title: string | null): string {
   if (title) {
     const componentTitle = formatName(title);
     return `{{pageTitle}}_${componentTitle}_{{timeRangeFrom}}_{{timeRangeTo}}.csv`;
@@ -9,12 +9,12 @@ export function getDataExportFileName(title) {
   return 'export.csv';
 }
 
-export function formatName(name) {
+export function formatName(name: string): string {
   return kebabCase(deburr(name));
 }
 
-export function listFormatter(lang) {
-  return function format(list, path = null) {
+export function listFormatter(lang: string) {
+  return function format(list: any[], path: string | null = null) {
     if (!list) {
       return '';
     }
@@ -38,16 +38,9 @@ export function listFormatter(lang) {
   };
 }
 
-export function durationToFormattedTimeStamp(
-  durationInSeconds,
-  showSeconds = true,
-) {
+export function durationToFormattedTimeStamp(durationInSeconds: number, showSeconds = true): string {
   const durationMillis = durationInSeconds * 1000;
-  const timestamp = Duration.fromMillis(durationMillis).shiftTo(
-    'days',
-    'hours',
-    'minutes',
-  );
+  const timestamp = Duration.fromMillis(durationMillis).shiftTo('days', 'hours', 'minutes');
   const daysHoursAndMinutes = timestamp.toFormat('d h m s').split(' ');
   const days = Number(daysHoursAndMinutes[0]);
   const hours = Number(daysHoursAndMinutes[1]);
