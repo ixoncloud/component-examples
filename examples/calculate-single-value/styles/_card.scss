@@ -22,7 +22,7 @@ $card-header-height: 40px;
     }
 
     .card-title {
-      padding: 8px 8px 0 8px;
+      padding: 8px 8px 0;
       margin: 0;
       font-size: 14px;
       font-weight: 500;
@@ -31,7 +31,7 @@ $card-header-height: 40px;
     }
 
     & > .card-title + .card-subtitle {
-      padding: 0 8px 8px 8px;
+      padding: 0 8px 8px;
     }
 
     .card-subtitle {

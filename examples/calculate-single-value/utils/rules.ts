@@ -5,7 +5,7 @@ function ruleToPredicate(
     color: string;
     colorUsage: string;
   },
-  value: number | string
+  value: number | string,
 ) {
   const threshold = rule.value;
   const type = typeof value;
@@ -52,21 +52,7 @@ export function mapValueToRule(
       color: string;
       colorUsage: string;
     };
-  }[]
+  }[],
 ) {
-  return rules?.find((item) => ruleToPredicate(item.rule, value));
-}
-
-export function mapValueToRuleIndex(
-  value: number | string,
-  rules: {
-    rule: {
-      operator: string;
-      value: string;
-      color: string;
-      colorUsage: string;
-    };
-  }[]
-) {
-  return rules?.findIndex((item) => ruleToPredicate(item.rule, value));
+  return rules?.find(item => ruleToPredicate(item.rule, value));
 }
