@@ -10,8 +10,9 @@
     ComponentContextAggregatedMetricInput,
   } from '@ixon-cdk/types';
 
+  import { durationToFormattedTimeStamp } from './utils/format';
   import { mapMetricInputToQuery } from './utils/query';
-  import { mapValueToRule, durationToformattedTimeStamp } from './utils';
+  import { mapValueToRule } from './utils';
 
   type Variable = {
     name: string;
@@ -200,7 +201,7 @@
         calculatedValue = Parser.evaluate(formula, variableKeyValues);
         const useTimeFormat = context?.inputs?.calculation?.useTimeFormatOutput;
         if (useTimeFormat) {
-          text = durationToformattedTimeStamp(calculatedValue);
+          text = durationToFormattedTimeStamp(calculatedValue, false);
         } else {
           text = toString(calculatedValue, decimals, unit, locale);
         }

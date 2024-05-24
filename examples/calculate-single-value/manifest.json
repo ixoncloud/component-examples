@@ -41,7 +41,7 @@
         "label": "Variable",
         "type": "Group",
         "summary": {
-          "label": "{{name}}: {{metric.formula}}",
+          "label": "{{name}}: {{$metric.formula}}",
           "colorField": "color"
         },
         "children": [
@@ -108,7 +108,7 @@
         "label": "Color rule",
         "type": "Group",
         "summary": {
-          "label": "{{operator}} {{value}} ({{colorUsage}})",
+          "label": "{{$operator.shortLabel}} {{value}} ({{colorUsage}})",
           "colorField": "color"
         },
         "children": [
@@ -143,26 +143,32 @@
             "options": [
               {
                 "value": "eq",
+                "shortLabel": "=",
                 "label": "Equal to (=)"
               },
               {
                 "value": "ne",
+                "shortLabel": "≠",
                 "label": "Not equal to (≠)"
               },
               {
                 "value": "lt",
+                "shortLabel": "<",
                 "label": "Less than (<)"
               },
               {
                 "value": "le",
+                "shortLabel": "≤",
                 "label": "Less than or equal (≤)"
               },
               {
                 "value": "gt",
+                "shortLabel": ">",
                 "label": "Greater than (>)"
               },
               {
                 "value": "ge",
+                "shortLabel": "≥",
                 "label": "Greater than or equal (≥)"
               }
             ]
