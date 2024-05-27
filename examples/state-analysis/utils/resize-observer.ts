@@ -2,8 +2,10 @@ export function runResizeObserver(el: HTMLElement, callback: (rect: DOMRectReadO
   const rect = el.getBoundingClientRect();
   callback(rect);
   const observer = new ResizeObserver(entries => {
-    entries.forEach(entry => {
-      callback(entry.contentRect);
+    requestAnimationFrame(() => {
+      entries.forEach(entry => {
+        callback(entry.contentRect);
+      });
     });
   });
   observer.observe(el);

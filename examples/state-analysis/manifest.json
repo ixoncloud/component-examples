@@ -107,7 +107,7 @@
         "label": "Rule",
         "type": "Group",
         "summary": {
-          "label": "{{name}}: {{operator}} {{value}}",
+          "label": "{{name}}: {{$operator.shortLabel}} {{value}}",
           "colorField": "color"
         },
         "children": [
@@ -132,26 +132,32 @@
             "options": [
               {
                 "value": "eq",
+                "shortLabel": "=",
                 "label": "Equal to (=)"
               },
               {
                 "value": "ne",
+                "shortLabel": "≠",
                 "label": "Not equal to (≠)"
               },
               {
                 "value": "lt",
+                "shortLabel": "<",
                 "label": "Less than (<)"
               },
               {
                 "value": "le",
+                "shortLabel": "≤",
                 "label": "Less than or equal (≤)"
               },
               {
                 "value": "gt",
+                "shortLabel": ">",
                 "label": "Greater than (>)"
               },
               {
                 "value": "ge",
+                "shortLabel": "≥",
                 "label": "Greater than or equal (≥)"
               }
             ]

@@ -1,21 +1,8 @@
 import * as echarts from 'echarts/core';
-import {
-  GridComponent,
-  LegendComponent,
-  TitleComponent,
-  TooltipComponent,
-} from 'echarts/components';
+import { GridComponent, LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components';
 import { BarChart, PieChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
-echarts.use([
-  BarChart,
-  CanvasRenderer,
-  GridComponent,
-  LegendComponent,
-  PieChart,
-  TitleComponent,
-  TooltipComponent,
-]);
+echarts.use([BarChart, CanvasRenderer, GridComponent, LegendComponent, PieChart, TitleComponent, TooltipComponent]);
 
 type Input = { [key: string]: number };
 type DataType = 'occurrences' | 'duration';
@@ -58,19 +45,13 @@ export class ChartService {
     this.dataType = 'occurrences';
   }
 
-  setData(
-    input: Input,
-    visualisation: string,
-    rules: Rules,
-    isNarrow: boolean,
-    dataType: DataType
-  ) {
+  setData(input: Input, visualisation: string, rules: Rules, isNarrow: boolean, dataType: DataType) {
     this.input = input;
     this.visualisation = visualisation;
     this.rules = rules;
     this.dataType = dataType;
 
-    const inputsArray = Object.keys(input).map((k) => {
+    const inputsArray = Object.keys(input).map(k => {
       return { label: k, value: input[k] };
     });
     const sortedInputsArrayDescending = inputsArray.sort((a, b) => {
@@ -79,7 +60,7 @@ export class ChartService {
 
     const largestValue = sortedInputsArrayDescending[0]?.value;
 
-    const chartData: ChartData = sortedInputsArrayDescending.map((k) => {
+    const chartData: ChartData = sortedInputsArrayDescending.map(k => {
       const rule = mapValueToRuleIndex(k.label, rules);
       const position = largestValue / 4 > k.value ? 'right' : 'inside';
       const val: ChartDataValue = {
@@ -105,7 +86,7 @@ export class ChartService {
         this.createDurBarChart(chartData);
       }
     } else if (visualisation === 'pie') {
-      const pieData: PieData = chartData.map((data) => ({
+      const pieData: PieData = chartData.map(data => ({
         value: data.val.value,
         name: data.key,
         itemStyle: data.val.itemStyle,
@@ -143,13 +124,7 @@ export class ChartService {
     if (this.myChart) {
       this.myChart.resize();
     }
-    this.setData(
-      this.input,
-      this.visualisation,
-      this.rules,
-      isNarrow,
-      this.dataType
-    );
+    this.setData(this.input, this.visualisation, this.rules, isNarrow, this.dataType);
   }
 
   private getBarOptions() {
@@ -198,12 +173,7 @@ export class ChartService {
     this.createPieChart(pieData, name, formatter, isNarrow);
   }
 
-  private createPieChart(
-    chartData: PieData,
-    chartName: string,
-    valueFormatter: Function,
-    isNarrow: boolean
-  ) {
+  private createPieChart(chartData: PieData, chartName: string, valueFormatter: Function, isNarrow: boolean) {
     const series = [
       {
         name: chartName,
@@ -243,15 +213,11 @@ export class ChartService {
     this.createBarChart(chartData, name, formatter);
   }
 
-  private createBarChart(
-    chartData: ChartData,
-    chartName: string,
-    valueFormatter: Function
-  ) {
+  private createBarChart(chartData: ChartData, chartName: string, valueFormatter: Function) {
     // For some reason echarts draws the bars in the reverse order of the data
     chartData = chartData.reverse();
 
-    const keys = chartData.map((x) => x.key);
+    const keys = chartData.map(x => x.key);
     const yAxis = {
       type: 'category',
       axisLine: { show: false },
@@ -271,7 +237,7 @@ export class ChartService {
             return valueFormatter(args.data.value);
           },
         },
-        data: chartData.map((x) => x.val),
+        data: chartData.map(x => x.val),
       },
     ];
     const xAxis = {
