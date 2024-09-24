@@ -23,7 +23,7 @@
 
   $: isNarrow = width < 640;
 
-  onMount(async () => {
+  onMount(() => {
     width = rootEl.getBoundingClientRect().width;
 
     if (!context.inputs.analysis.type || !context.inputs.style.visualisation) {
@@ -46,7 +46,7 @@
 
     getDataAndDrawVisuals(chartService);
 
-    context.ontimerangechange = async () => {
+    context.ontimerangechange = () => {
       getDataAndDrawVisuals(chartService);
     };
 
