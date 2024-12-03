@@ -124,7 +124,7 @@ export class DataService {
         preAggr: 'raw',
         queries: [
           {
-            postAggr: 'last',
+            postAggr: 'raw',
             ref: slug,
             limit: 1,
           },
