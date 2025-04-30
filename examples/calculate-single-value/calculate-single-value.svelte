@@ -8,18 +8,29 @@
     ComponentContext,
     LoggingDataMetric,
     ComponentContextAggregatedMetricInput,
+    ComponentContextFactory,
   } from '@ixon-cdk/types';
 
-  import { durationToFormattedTimeStamp } from './utils/format';
+  import {
+    valueToString,
+    valueToFormattedDateTime,
+    valueToFormattedDuration,
+  } from './utils/format';
   import { mapMetricInputToQuery } from './utils/query';
   import { mapValueToRule } from './utils';
+  import { addDefaultOutputTypeAndDuration } from './utils/migrate-output-type-duration';
+  import type { Inputs } from './types';
 
   type Variable = {
     name: string;
     metric: ComponentContextAggregatedMetricInput;
   };
 
-  export let context: ComponentContext;
+  export let contextFactory: ComponentContextFactory;
+
+  let context: ComponentContext<Inputs>;
+
+  let translations: Record<string, string> = {};
 
   let rootEl: HTMLDivElement;
 
@@ -121,23 +132,11 @@
     return `${-textWidth / 2} ${-textHeight / 2} ${textWidth} ${textHeight}`;
   }
 
-  function toString(
-    value: number,
-    decimals: number,
-    unit: string,
-    locale: string,
-  ) {
-    const options: Intl.NumberFormatOptions = {
-      style: 'decimal',
-      minimumFractionDigits: Math.floor(decimals),
-      maximumFractionDigits: Math.floor(decimals),
-    };
-    const formatter = new Intl.NumberFormat(locale, options);
-    return `${formatter.format(value)}${unit ? ' ' + unit : ''}`;
-  }
-
   // Events
   onMount(() => {
+    context = contextFactory({
+      migrateInputs: addDefaultOutputTypeAndDuration,
+    });
     debugMode = context.inputs.debugMode;
     context.ontimerangechange = () => {
       calculatedValue = null;
@@ -145,8 +144,16 @@
       error = '';
     };
 
+    translations = context.translate([
+      '__MESSAGE__.INVALID_NUMBER',
+      '__TIME__.DAYS',
+      '__TIME__.HOURS',
+      '__TIME__.MINUTES',
+      '__TIME__.SECONDS',
+      '__TIME__.MILLISECONDS',
+    ]);
+
     const client = context.createLoggingDataClient();
-    // const { variables: ComponentContextInputs } = context.inputs || [];
     const variables = context.inputs.variables;
     const queries = variables.map((x: { variable: Variable }) => {
       return {
@@ -192,18 +199,84 @@
         {},
       );
 
-      formula = context.inputs.calculation.formula;
-      const decimals = context.inputs.calculation.decimals || 0;
-      const unit = context.inputs.calculation.unit;
-      const locale = context.appData.locale;
+      // read context
+      formula = context?.inputs?.calculation?.formula;
+      const decimals = context?.inputs?.calculation?.decimals || 0;
+      const unit = context?.inputs?.calculation?.unit || '';
+      const locale = context?.appData?.locale;
+      const timezone = context?.appData?.timeZone;
+
+      // check whether the value should be displayed as a duration or time
+      const useTimeFormat = context?.inputs?.calculation?.useTimeFormatOutput;
 
       try {
+        // parse expression
         calculatedValue = Parser.evaluate(formula, variableKeyValues);
-        const useTimeFormat = context?.inputs?.calculation?.useTimeFormatOutput;
+
+        // cancel if the given duration or time is invalid
+        if (!Number.isFinite(calculatedValue)) {
+          text = translations['__MESSAGE__.INVALID_NUMBER'];
+        }
+
         if (useTimeFormat) {
-          text = durationToFormattedTimeStamp(calculatedValue, false);
+          const outputType = context?.inputs?.calculation?.outputType;
+          const timePrecision = context?.inputs?.calculation?.timePrecision;
+          const showSeconds = timePrecision === 'seconds';
+
+          // format value based on the selected configuration
+          switch (outputType) {
+            case 'duration-short':
+              text = valueToFormattedDuration(
+                translations,
+                false,
+                calculatedValue,
+                showSeconds,
+              );
+              break;
+            case 'duration':
+              text = valueToFormattedDuration(
+                translations,
+                true,
+                calculatedValue,
+                showSeconds,
+              );
+              break;
+            case 'date':
+              text = valueToFormattedDateTime(
+                locale,
+                translations,
+                timezone,
+                calculatedValue,
+                true,
+                false,
+                false,
+              );
+              break;
+            case 'dateTime':
+              text = valueToFormattedDateTime(
+                locale,
+                translations,
+                timezone,
+                calculatedValue,
+                true,
+                true,
+                showSeconds,
+              );
+              break;
+            case 'time':
+              text = valueToFormattedDateTime(
+                locale,
+                translations,
+                timezone,
+                calculatedValue,
+                false,
+                true,
+                showSeconds,
+              );
+              break;
+          }
         } else {
-          text = toString(calculatedValue, decimals, unit, locale);
+          text = valueToString(locale, calculatedValue, decimals, unit);
         }
       } catch {
         error = 'Invalid formula, example: x / y * 100';
@@ -232,10 +305,10 @@
 <div class="card" bind:this={rootEl} style={cardStyle}>
   {#if hasHeader}
     <div class="card-header">
-      {#if header.title}
+      {#if header?.title}
         <h3 class="card-title">{header.title}</h3>
       {/if}
-      {#if header.subtitle}
+      {#if header?.subtitle}
         <h4 class="card-subtitle">{header.subtitle}</h4>
       {/if}
     </div>
