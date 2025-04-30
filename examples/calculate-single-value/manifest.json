@@ -56,6 +56,7 @@
             "label": "Metric",
             "type": "AggregatedMetric",
             "allowedTypes": [
+              "bool",
               "int",
               "float"
             ],
@@ -94,8 +95,59 @@
         {
           "key": "useTimeFormatOutput",
           "type": "Checkbox",
-          "label": "Output as time (formula needs to return seconds)",
+          "label": "Output as duration or date and/or time (formula needs to return a duration or a UTC timestamp in seconds)",
           "defaultValue": false
+        },
+        {
+          "key": "outputType",
+          "type": "Selection",
+          "label": "Output type",
+          "options": [
+            {
+              "value": "duration-short",
+              "shortLabel": "Duration (short format)",
+              "label": "Duration (short format)"
+            },
+            {
+              "value": "duration",
+              "shortLabel": "Duration",
+              "label": "Duration"
+            },
+            {
+              "value": "date",
+              "shortLabel": "Date",
+              "label": "Date"
+            },
+            {
+              "value": "dateTime",
+              "shortLabel": "Date and time",
+              "label": "Date and time"
+            },
+            {
+              "value": "time",
+              "shortLabel": "Time",
+              "label": "Time"
+            }
+          ],
+          "defaultValue": "duration-short"
+        },
+        {
+          "key": "timePrecision",
+          "type": "Selection",
+          "label": "Time precision",
+          "options": [
+            {
+              "value": "minutes",
+              "shortLabel": "Minutes",
+              "label": "Minutes"
+            },
+            {
+              "value": "seconds",
+              "shortLabel": "Seconds",
+              "label": "Seconds"
+            }
+          ],
+          "defaultValue": "minutes"
         }
       ]
     },
