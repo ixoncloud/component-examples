@@ -12,6 +12,7 @@
   import type { ComponentContext, ResourceDataClient } from '@ixon-cdk/types';
 
   import { runResizeObserver } from './utils/resize-observer';
+  import { themeIsDark } from './utils/theme';
 
   export let context: ComponentContext;
 
@@ -30,7 +31,7 @@
       return;
     }
 
-    const chartService = new ChartService(chartEl);
+    const chartService = new ChartService(chartEl, themeIsDark(context));
 
     header = context ? context.inputs.header : undefined;
 
@@ -38,7 +39,9 @@
 
     const resizeObserver = runResizeObserver(rootEl, () => {
       tick().then(() => {
-        if (!rootEl) return;
+        if (!rootEl) {
+          return;
+        }
         width = rootEl.getBoundingClientRect().width;
         chartService.resize(isNarrow);
       });
