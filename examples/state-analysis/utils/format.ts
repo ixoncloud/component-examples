@@ -14,7 +14,7 @@ export function formatName(name: string): string {
 }
 
 export function listFormatter(lang: string) {
-  return function format(list: any[], path: string | null = null) {
+  return function format(list: unknown[], path: string | null = null) {
     if (!list) {
       return '';
     }
@@ -50,7 +50,7 @@ export function durationToFormattedTimeStamp(durationInSeconds: number, showSeco
     const seconds = Number(daysHoursAndMinutes[3]);
     formattedTimestamp += ` ${seconds}s`;
   }
-  if (days > 0) {
+  if (days !== 0) {
     return `${days}d ${formattedTimestamp}`;
   }
   return formattedTimestamp;
